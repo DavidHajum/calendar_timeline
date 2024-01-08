@@ -67,7 +67,7 @@ class CalendarTimeline extends StatefulWidget {
   final Color? dotsColor;
   final Color? dayNameColor;
   final bool shrink;
-  final Map<DateTime, List>? events;
+  final Map<DateTime, List<dynamic>>? events;
   final Color? badgeColor;
   final String? locale;
 
