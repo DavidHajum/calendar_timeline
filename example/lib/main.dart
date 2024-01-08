@@ -60,7 +60,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             CalendarTimeline(
-              showYears: true,
               initialDate: _selectedDate,
               firstDate: DateTime.now(),
               lastDate: DateTime.now().add(const Duration(days: 365 * 4)),
@@ -71,8 +70,17 @@ class _HomePageState extends State<HomePage> {
               dayNameColor: const Color(0xFF333A47),
               activeDayColor: Colors.white,
               activeBackgroundDayColor: Colors.redAccent[100],
-              dotsColor: const Color(0xFF333A47),
+              dotsColor: Colors.redAccent[100],
               selectableDayPredicate: (date) => date.day != 23,
+              events: {
+                DateTime.now().add(Duration(days: 1)): [],
+                DateTime.now().add(Duration(days: 2)): [Container()],
+                DateTime.now().add(Duration(days: 3)): [
+                  Container(),
+                  Container()
+                ],
+              },
+              badgeColor: Colors.green,
               locale: 'en',
             ),
             const SizedBox(height: 20),

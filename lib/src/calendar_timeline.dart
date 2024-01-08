@@ -30,6 +30,8 @@ class CalendarTimeline extends StatefulWidget {
     this.dayNameColor,
     this.shrink = false,
     this.locale,
+    this.events,
+    this.badgeColor,
     this.showYears = false,
   })  : assert(
           initialDate.difference(firstDate).inDays >= 0,
@@ -65,6 +67,8 @@ class CalendarTimeline extends StatefulWidget {
   final Color? dotsColor;
   final Color? dayNameColor;
   final bool shrink;
+  final Map<DateTime, List<Widget>>? events;
+  final Color? badgeColor;
   final String? locale;
 
   /// If true, it will show a separate row for the years.
@@ -442,23 +446,44 @@ class _CalendarTimelineState extends State<CalendarTimeline> {
           final currentDay = _days[index];
           final shortName =
               DateFormat.E(_locale).format(currentDay).capitalize();
+
+          int eventCount = 0;
+
+          if (widget.events != null) {
+            for (int i = 0; i < widget.events!.keys.length; i++) {
+              DateTime eventDate = widget.events!.keys.toList()[i];
+
+              if (eventDate.day == currentDay.day &&
+                  eventDate.month == currentDay.month &&
+                  eventDate.year == currentDay.year) {
+                eventCount = widget.events![eventDate]!.length;
+              }
+            }
+          }
+
           return Row(
             children: <Widget>[
-              DayItem(
-                isSelected: _isSelectedDay(index),
-                dayNumber: currentDay.day,
-                shortName: shortName.length > 3
-                    ? shortName.substring(0, 3)
-                    : shortName,
-                onTap: () => _onSelectDay(index),
-                available: widget.selectableDayPredicate == null ||
-                    widget.selectableDayPredicate!(currentDay),
-                dayColor: widget.dayColor,
-                activeDayColor: widget.activeDayColor,
-                activeDayBackgroundColor: widget.activeBackgroundDayColor,
-                dotsColor: widget.dotsColor,
-                dayNameColor: widget.dayNameColor,
-                shrink: widget.shrink,
+              Badge(
+                label: Text(eventCount.toString()),
+                offset: const Offset(-2, 2),
+                isLabelVisible: eventCount > 0,
+                backgroundColor: widget.badgeColor,
+                child: DayItem(
+                  isSelected: _isSelectedDay(index),
+                  dayNumber: currentDay.day,
+                  shortName: shortName.length > 3
+                      ? shortName.substring(0, 3)
+                      : shortName,
+                  onTap: () => _onSelectDay(index),
+                  available: widget.selectableDayPredicate == null ||
+                      widget.selectableDayPredicate!(currentDay),
+                  dayColor: widget.dayColor,
+                  activeDayColor: widget.activeDayColor,
+                  activeDayBackgroundColor: widget.activeBackgroundDayColor,
+                  dotsColor: widget.dotsColor,
+                  dayNameColor: widget.dayNameColor,
+                  shrink: widget.shrink,
+                ),
               ),
               if (index == _days.length - 1)
                 // Last element to take space to do scroll to left side
